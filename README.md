@@ -136,7 +136,22 @@ EVA is a powerful system for optimizing queries and achieving lightning-fast per
 - 🎯 **Predicate Reordering**: EVA's predicate reordering feature optimizes the order in which query predicates are evaluated, resulting in faster query execution times and more efficient resource usage.
 
 
-To showcase the benefits of EVA's caching and predicate reordering, we ran experiments on a dataset of dogs using the following queries:
+To showcase the benefits of EVA's caching and predicate reordering, we ran experiments on a dataset of dogs using the following queries:  
+| ```mysql
+  -- Find all black dogs
+  SELECT id, bbox FROM dogs 
+  JOIN LATERAL UNNEST(YoloV5(data)) AS Obj(label, bbox, score) 
+  WHERE Obj.label = 'dog' 
+    AND Color(Crop(data, bbox)) = 'black'; 
+
+  -- Find all Great Danes that are black
+  SELECT id, bbox FROM dogs 
+  JOIN LATERAL UNNEST(YoloV5(data)) AS Obj(label, bbox, score) 
+  WHERE Obj.label = 'dog' 
+    AND DogBreedClassifier(Crop(data, bbox)) = 'great dane' 
+    AND Color(Crop(data, bbox)) = 'black';
+``` | ![Flowers](https://github.com/georgia-tech-db/eva/blob/master/data/assets/eva_performance_comparison.png?raw=true) |
+  
 <img align="right" style="float: right;" height="280" width="320" src="https://github.com/georgia-tech-db/eva/blob/master/data/assets/eva_performance_comparison.png?raw=true"></a>
 ```mysql
   -- Find all black dogs
